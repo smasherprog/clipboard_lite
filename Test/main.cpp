@@ -23,6 +23,10 @@ int main(int argc, char* argv[]) {
         std::cout << text << std::endl;
     }).run();
 
+    std::this_thread::sleep_for(1s);
+    std::string txt = "pasted text";
+    clipboard.paste_Text(txt);
+
     while (!done) {
         std::this_thread::sleep_for(1s);
     }

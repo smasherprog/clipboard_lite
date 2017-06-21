@@ -9,7 +9,7 @@ namespace SL {
         const UINT formatHTML = RegisterClipboardFormat(_T("HTML Format"));
 
         Clipboard_ManagerImpl::Clipboard_ManagerImpl() {
-
+            Pasting = false;
         }
         Clipboard_ManagerImpl::~Clipboard_ManagerImpl() {
             if (Hwnd) {
@@ -34,26 +34,20 @@ namespace SL {
                             MSG msg;
                             while (GetMessage(&msg, Hwnd, 0, 0) != 0) {
                                 if (msg.message == WM_CLIPBOARDUPDATE) {
-                                    if (!IgnoreClipUpdateNotice) {
-                                        std::lock_guard<std::mutex> l(ClipboardLock);
-                                        if (!IgnoreClipUpdateNotice) {
-                                            IgnoreClipUpdateNotice = true;
-                                            if (OpenClipboard(Hwnd) == TRUE) {
-
-                                                std::string data;
-                                                if (onRTF && LoadClip(data, formatRTF)) {
-                                                    onRTF(data);
-                                                } else if (onHTML && LoadClip(data, formatHTML)) {
-                                                    onHTML(data);
-                                                } else if (onText && LoadClip(data, CF_TEXT)) {
-                                                    onText(data);
-                                                }
-                                                CloseClipboard();
-                                            }
+                                    if (!Pasting && OpenClipboard(Hwnd) == TRUE) {
+                                        std::string data;
+                                        if (onRTF && LoadClip(data, formatRTF)) {
+                                            onRTF(data);
                                         }
-
-                                        IgnoreClipUpdateNotice = false;
+                                        else if (onHTML && LoadClip(data, formatHTML)) {
+                                            onHTML(data);
+                                        }
+                                        else if (onText && LoadClip(data, CF_TEXT)) {
+                                            onText(data);
+                                        }
+                                        CloseClipboard();
                                     }
+                                    Pasting = false;
                                 }
                                 else
                                 {
@@ -67,6 +61,18 @@ namespace SL {
                     }
                 }
             });
+        }
+        void Clipboard_ManagerImpl::paste_HTML(const std::string& html) {
+            Pasting = true;
+            RestoreClip(html, formatHTML);
+        }
+        void Clipboard_ManagerImpl::paste_RTF(const std::string& rtf) {
+            Pasting = true;
+            RestoreClip(rtf, formatRTF);
+        }
+        void Clipboard_ManagerImpl::paste_Text(const std::string& text) {
+            Pasting = true;
+            RestoreClip(text, CF_TEXT);
         }
 
     };
