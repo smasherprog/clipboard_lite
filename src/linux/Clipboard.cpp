@@ -1,8 +1,10 @@
 #include "Clipboard.h"
+
 #include <string>
 #include <functional>
 #include <assert.h>
 #include <iostream>
+
 
 namespace SL
 {
@@ -11,6 +13,7 @@ namespace Clipboard_Lite
 
     Clipboard_ManagerImpl::Clipboard_ManagerImpl()
     {
+
         Pasting = false;
         Display_ = XOpenDisplay(NULL);
         assert(Display_);

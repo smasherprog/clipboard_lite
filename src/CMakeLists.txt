@@ -30,6 +30,7 @@ set(CLIPBOARD_LITE_PLATFORM_LIBS ${corefoundation_lib} ${cocoa_lib})
     )
 else()
   set(CLIPBOARD_LITE_PLATFORM_SRC
+
 	${CMAKE_CURRENT_SOURCE_DIR}/../include/linux/Clipboard.h
 	${CMAKE_CURRENT_SOURCE_DIR}/../src/linux/Clipboard.cpp
     )
