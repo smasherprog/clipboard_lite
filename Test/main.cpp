@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
     bool done = false;
     std::cout << "The example will exit if you copy or cut rtf to the clipboard" << std::endl;
     auto clipboard = SL::Clipboard_Lite::CreateClipboard()
-        .onHTML([](const std::string& html) {
+    .onHTML([](const std::string& html) {
         std::cout << "onHTML" << std::endl;
         std::cout << html << std::endl;
     }).onRTF([&](const std::string& rtf) {
