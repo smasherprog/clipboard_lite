@@ -8,7 +8,8 @@ endif()
 
 if(WIN32)
     set(CLIPBOARD_LITE_PLATFORM_SRC     
-
+	${CMAKE_CURRENT_SOURCE_DIR}/../include/windows/Clipboard.h
+	${CMAKE_CURRENT_SOURCE_DIR}/../src/windows/Clipboard.cpp
     )
 
     set(CLIPBOARD_LITE_PLATFORM_INC     
@@ -29,6 +30,9 @@ set(CLIPBOARD_LITE_PLATFORM_LIBS ${corefoundation_lib} ${cocoa_lib})
     )
 else()
   set(CLIPBOARD_LITE_PLATFORM_SRC
+
+	${CMAKE_CURRENT_SOURCE_DIR}/../include/linux/Clipboard.h
+	${CMAKE_CURRENT_SOURCE_DIR}/../src/linux/Clipboard.cpp
     )
   
 	find_package(X11 REQUIRED)
@@ -54,8 +58,6 @@ else()
 endif()
 
 set(CLIPBOARD_LITE_COMMON_SRC 
-	${CMAKE_CURRENT_SOURCE_DIR}/../include/windows/Clipboard.h
-	${CMAKE_CURRENT_SOURCE_DIR}/../src/windows/Clipboard.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/../include/Clipboard_Lite.h
 	${CMAKE_CURRENT_SOURCE_DIR}/../src/Clipboard_Lite.cpp
 )
