@@ -18,17 +18,52 @@ namespace SL {
             HWND Hwnd = nullptr;
         public:
 
-            std::function<void(const std::string& html)> onHTML;
-            std::function<void(const std::string& html)> onRTF;
             std::function<void(const std::string& text)> onText;
 
             Clipboard_ManagerImpl();
             ~Clipboard_ManagerImpl();
 
             void run();
-            void paste_HTML(const std::string& html);
-            void paste_RTF(const std::string& rtf);
-            void paste_Text(const std::string& text);
+            void paste(const std::string& test);
+
+            template<class T>bool LoadClip(T& buffer, UINT format) {
+                if (IsClipboardFormatAvailable(format)) {
+                    auto h = ::GetClipboardData(format);
+                    if (h) {
+                        auto pData = GlobalLock(h);
+                        auto nLength = GlobalSize(h);
+                        if (pData && nLength > 0) {
+                            buffer.resize(nLength);
+                            memcpy((void*)buffer.data(), pData, nLength);
+                            GlobalUnlock(h);
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            template<class T>void RestoreClip(const T& buffer, UINT format) {
+                if (OpenClipboard(Hwnd) == TRUE) {
+                    if (EmptyClipboard() == TRUE && buffer.size() > 0) {
+                        auto hData = GlobalAlloc(GMEM_MOVEABLE, buffer.size());
+                        if (hData) {
+                            auto pData = GlobalLock(hData);
+                            if (pData) {
+                                memcpy(pData, buffer.data(), buffer.size());
+                                GlobalUnlock(hData);
+                                if (::SetClipboardData(format, hData)) {
+                                    //clipboard takes ownership of the memory
+                                    hData = nullptr;
+                                }
+                            }
+                        }
+                        if (hData) {
+                            GlobalFree(hData);
+                        }
+                    }
+                    CloseClipboard();
+                }
+            }
         };
     }
 }
