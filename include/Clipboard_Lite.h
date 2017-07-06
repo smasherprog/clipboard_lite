@@ -6,9 +6,9 @@ namespace SL {
     namespace Clipboard_Lite {
         struct Image {
             std::shared_ptr<unsigned char> Data;
-            size_t Height = 0;
-            size_t Width = 0;
-            size_t PixelStride = 4;
+            int Height = 0;
+            int Width = 0;
+            int PixelStride = 4;
         };
         class Clipboard_ManagerImpl;
         class Clipboard_Manager {

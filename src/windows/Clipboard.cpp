@@ -8,7 +8,7 @@
 
 namespace SL {
     namespace Clipboard_Lite {
-         Clipboard_ManagerImpl::Clipboard_ManagerImpl() {
+        Clipboard_ManagerImpl::Clipboard_ManagerImpl() {
             Copying = false;
         }
         Clipboard_ManagerImpl::~Clipboard_ManagerImpl() {
@@ -31,42 +31,40 @@ namespace SL {
                     GlobalLockWrapper dib(GlobalLock(hClipboard));
                     if (dib)
                     {
-                      auto info = reinterpret_cast<LPBITMAPINFO>(dib.Ptr);
-                      if (info->bmiHeader.biBitCount != 32) {
-                          std::cout << "Not 32 bits"<< "\n";
-                          return;
-                      }
+                        auto info = reinterpret_cast<LPBITMAPINFO>(dib.Ptr);
                         Image img;
-                        img.Width = info->bmiHeader.biWidth;
-                        img.Height = info->bmiHeader.biHeight;
-                 /*       BMP bmp = { 0 };
-                        bmp.header.type = 0x4D42;
-                        bmp.header.offset = 54;
-                        bmp.header.bfSize = info->biSizeImage + bmp.header.offset;
-                        bmp.dib = *info;
+                        if ((info->bmiHeader.biBitCount == 24 || info->bmiHeader.biBitCount == 32) &&
+                            info->bmiHeader.biCompression == BI_RGB && info->bmiHeader.biClrUsed == 0) {
 
-                        std::cout << "Type: " << std::hex << bmp.header.type << std::dec << "\n";
-                        std::cout << "bfSize: " << bmp.header.bfSize << "\n";
-                        std::cout << "Reserved: " << bmp.header.reserved << "\n";
-                        std::cout << "Offset: " << bmp.header.offset << "\n";
-                        std::cout << "biSize: " << bmp.dib.biSize << "\n";
-                        std::cout << "Width: " << bmp.dib.biWidth << "\n";
-                        std::cout << "Height: " << bmp.dib.biHeight << "\n";
-                        std::cout << "Planes: " << bmp.dib.biPlanes << "\n";
-                        std::cout << "Bits: " << bmp.dib.biBitCount << "\n";
-                        std::cout << "Compression: " << bmp.dib.biCompression << "\n";
-                        std::cout << "Size: " << bmp.dib.biSizeImage << "\n";
-                        std::cout << "X-res: " << bmp.dib.biXPelsPerMeter << "\n";
-                        std::cout << "Y-res: " << bmp.dib.biYPelsPerMeter << "\n";
-                        std::cout << "ClrUsed: " << bmp.dib.biClrUsed << "\n";
-                        std::cout << "ClrImportant: " << bmp.dib.biClrImportant << "\n";*/
-                       
-                        img.PixelStride = info->bmiHeader.biBitCount / 4;
-                        img.Data = std::shared_ptr<unsigned char>(new unsigned char[info->bmiHeader.biSizeImage], [](auto p) {if (p) delete[] p; });
-                        memcpy(img.Data.get(), (info + 1), info->bmiHeader.biSizeImage);
-                        assert(info->bmiHeader.biSizeImage == img.Width* img.Height*4);
-                        onImage(img);
+                            img.Width = info->bmiHeader.biWidth;
+                            img.Height = info->bmiHeader.biHeight;
 
+                            img.PixelStride = info->bmiHeader.biBitCount / 4;
+                            img.Data = std::shared_ptr<unsigned char>(new unsigned char[info->bmiHeader.biSizeImage], [](auto p) {if (p) delete[] p; });
+                            memcpy(img.Data.get(), (info + 1), info->bmiHeader.biSizeImage);
+
+                            auto linewidth = 0;
+                            auto depth = info->bmiHeader.biBitCount / 8; 
+                            if (depth == 3) linewidth = 4 * ((3 * img.Width + 3) / 4); 
+                            else linewidth = 4 * img.Width;
+                            img.Data = std::shared_ptr<unsigned char>(new unsigned char[img.Height *  img.Width * depth], [](auto p) {if (p) delete[] p; });
+
+                            auto *p = img.Data.get();
+
+                            for (int i = img.Height - 1; i >= 0; i--) { // for each row, from last to first
+                                auto r = (unsigned char*)(info->bmiColors) + i*linewidth; // beginning of pixel data for the ith row
+                                for (int j = 0; j < img.Width; j++) { // for each pixel in a row
+                                    auto bb = *r++; // BGR is in DIB
+                                    auto gg = *r++;
+                                    auto rr = *r++;
+                                    *p++ = rr; // we want RGB
+                                    *p++ = gg;
+                                    *p++ = bb;
+                                    if (depth == 4) *p++ = *r++;
+                                }
+                            }
+                            onImage(img);
+                        }
                     }
 
                 }
@@ -105,14 +103,14 @@ namespace SL {
                             MSG msg;
                             while (GetMessage(&msg, Hwnd, 0, 0) != 0) {
                                 if (msg.message == WM_CLIPBOARDUPDATE) {
-                                   
+                                    if (!Copying) {
                                         if (onText) {
                                             LoadClipText();
                                         }
                                         if (onImage) {
                                             LoadClipImage();
                                         }
-                            
+                                    }
                                     Copying = false;
                                 }
                                 else
