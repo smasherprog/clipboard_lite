@@ -3,5 +3,5 @@ a cross platform clipboard library
 
 Progress<br/>
 WIndows: Partial<br/>
-Linux: In Progress<br/>
+Linux:Partial<br/>
 MacOS: Not Started<br/>
