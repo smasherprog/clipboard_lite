@@ -12,16 +12,65 @@
 
 namespace SL {
     namespace Clipboard_Lite {
+        struct Image;
+
+        //HELPERS
+        class ClipWrapper {
+            HWND Hwnd;
+            BOOL Opened = FALSE;
+        public:
+            ClipWrapper(HWND h) : Hwnd(h) {
+                Opened = OpenClipboard(Hwnd);
+            }
+            operator bool() {
+                return Opened == TRUE;
+            }
+            ~ClipWrapper() {
+                if (Opened == TRUE) {
+                    CloseClipboard();
+                }
+            }
+        };
+        class GlobalLockWrapper {
+        public:
+            GlobalLockWrapper(void* ptr) : Ptr(ptr) {}
+            ~GlobalLockWrapper() { if (Ptr != nullptr) { GlobalUnlock(Ptr); } }
+            operator bool() {
+                return Ptr != nullptr;
+            }
+            void* Ptr;
+        };
+        class HDCWrapper {
+        public:
+            HDCWrapper(HDC d) : DC(d) {}
+            ~HDCWrapper() { if (DC != nullptr) { DeleteDC(DC); } }
+            operator bool() {
+                return DC != nullptr;
+            }
+            HDC DC;
+        };
+        class HBITMAPWrapper {
+        public:
+            HBITMAPWrapper(HBITMAP b) : Bitmap(b) {}
+            ~HBITMAPWrapper() { if (Bitmap != nullptr) { DeleteObject(Bitmap); } }
+            operator bool() {
+                return Bitmap != nullptr;
+            }
+            HBITMAP Bitmap;
+        };
 
         class Clipboard_ManagerImpl {
             std::thread BackGroundWorker;
             std::atomic<bool> Copying;
             HWND Hwnd = nullptr;
-            std::vector<unsigned char> Data;
+
+            void LoadClipImage();
+            void LoadClipText();
 
         public:
 
-            std::function<void(const char* data, size_t len)> onText;
+            std::function<void(const std::string& text)> onText;
+            std::function<void(const Image& image)> onImage;
 
             Clipboard_ManagerImpl();
             ~Clipboard_ManagerImpl();
@@ -29,22 +78,7 @@ namespace SL {
             void run();
             void copy(const std::string& test);
 
-            template<class T>bool LoadClip(T& buffer, UINT format) {
-                if (IsClipboardFormatAvailable(format)) {
-                    auto h = ::GetClipboardData(format);
-                    if (h) {
-                        auto pData = GlobalLock(h);
-                        auto nLength = GlobalSize(h);
-                        if (pData && nLength > 0) {
-                            buffer.resize(nLength);
-                            memcpy((void*)buffer.data(), pData, nLength);
-                            GlobalUnlock(h);
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
+    
             template<class T>void RestoreClip(const T& buffer, UINT format) {
                 if (OpenClipboard(Hwnd) == TRUE) {
                     if (EmptyClipboard() == TRUE && buffer.size() > 0) {
