@@ -12,8 +12,8 @@ namespace SL {
             Clipboard_Manager(const std::shared_ptr<Clipboard_ManagerImpl>& impl) : Impl_(impl) {}
             Clipboard_Manager() {}
 
-            //paste text to the clipboard
-            void paste(const std::string& text);
+            //copy text into the clipboard
+            void copy(const std::string& text);
 
             operator bool() const { return Impl_.operator bool(); }
             //will stop the library from processing frames and release all memory
@@ -23,8 +23,8 @@ namespace SL {
             std::shared_ptr<Clipboard_ManagerImpl> Impl_;
         public:
             Clipboard_Configuration(const std::shared_ptr<Clipboard_ManagerImpl>& impl) : Impl_(impl) {}
-  
-            Clipboard_Configuration onText(const std::function<void(const std::string& text)>& handle);
+
+            Clipboard_Configuration onText(const std::function<void(const char* data, size_t len)>& handle);
 
             Clipboard_Manager run();
         };

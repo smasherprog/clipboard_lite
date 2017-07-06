@@ -8,20 +8,31 @@ using namespace std::chrono_literals;
 
 int main(int argc, char* argv[]) {
 
-    bool done = false;
-    std::cout << "The example will exit if you copy or cut rtf to the clipboard" << std::endl;
+
+    std::cout << "Clipboard Example running" << std::endl;
     auto clipboard = SL::Clipboard_Lite::CreateClipboard()
-    .onText([](const std::string& text) {
-        std::cout << "onText" << std::endl;
-        std::cout << text << std::endl;
-    }).run();
+        .onText([](const char* string, size_t len) {
+        std::cout << "onText" << len<< std::endl;
+        std::cout << string << std::endl;
+    })
+        .run();
 
     std::this_thread::sleep_for(1s);
+    std::cout << "Copying Text to clipboard" << std::endl;
     std::string txt = "pasted text";
-    clipboard.paste(txt);
+    clipboard.copy(txt);
 
-    while (!done) {
-        std::this_thread::sleep_for(1s);
+
+
+    auto i = 0;
+    while (true) {
+        std::this_thread::sleep_for(10s);
+        std::cout << "Copying Text to clipboard a " << i++ << " time" << std::endl;
+        txt = "pasted text a time ";
+        txt += std::to_string(i);
+        clipboard.copy(txt);
     }
+    std::this_thread::sleep_for(10s);
+
     return 0;
 }

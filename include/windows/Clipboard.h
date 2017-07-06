@@ -8,23 +8,26 @@
 #include <thread>
 #include <mutex>
 #include <atomic>
+#include <vector>
 
 namespace SL {
     namespace Clipboard_Lite {
 
         class Clipboard_ManagerImpl {
             std::thread BackGroundWorker;
-            std::atomic<bool> Pasting;
+            std::atomic<bool> Copying;
             HWND Hwnd = nullptr;
+            std::vector<unsigned char> Data;
+
         public:
 
-            std::function<void(const std::string& text)> onText;
+            std::function<void(const char* data, size_t len)> onText;
 
             Clipboard_ManagerImpl();
             ~Clipboard_ManagerImpl();
 
             void run();
-            void paste(const std::string& test);
+            void copy(const std::string& test);
 
             template<class T>bool LoadClip(T& buffer, UINT format) {
                 if (IsClipboardFormatAvailable(format)) {

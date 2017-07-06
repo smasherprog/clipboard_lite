@@ -7,7 +7,7 @@ namespace SL {
 
 
         Clipboard_ManagerImpl::Clipboard_ManagerImpl() {
-            Pasting = false;
+            Copying = false;
         }
         Clipboard_ManagerImpl::~Clipboard_ManagerImpl() {
             if (Hwnd) {
@@ -32,14 +32,14 @@ namespace SL {
                             MSG msg;
                             while (GetMessage(&msg, Hwnd, 0, 0) != 0) {
                                 if (msg.message == WM_CLIPBOARDUPDATE) {
-                                    if (!Pasting && OpenClipboard(Hwnd) == TRUE) {
-                                        std::string data;
-                                        if (onText && LoadClip(data, CF_TEXT)) {
-                                            onText(data);
+                                    if (!Copying && OpenClipboard(Hwnd) == TRUE) {
+
+                                        if (onText && LoadClip(Data, CF_TEXT)) {
+                                            onText(reinterpret_cast<char*>(Data.data()), Data.size());
                                         }
                                         CloseClipboard();
                                     }
-                                    Pasting = false;
+                                    Copying = false;
                                 }
                                 else
                                 {
@@ -55,8 +55,8 @@ namespace SL {
             });
         }
 
-        void Clipboard_ManagerImpl::paste(const std::string& text) {
-            Pasting = true;
+        void Clipboard_ManagerImpl::copy(const std::string& text) {
+            Copying = true;
             RestoreClip(text, CF_TEXT);
         }
 
