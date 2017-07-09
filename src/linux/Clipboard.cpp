@@ -20,7 +20,7 @@ namespace SL
         {
 
             Pasting = false;
-            auto d = Display_ = Display_ = XOpenDisplay(NULL);
+            auto d = Display_ = XOpenDisplay(NULL);
             assert(Display_);
             Window_ = XCreateWindow(Display_,
                 RootWindow(Display_, XDefaultScreen(Display_)),
@@ -98,7 +98,8 @@ namespace SL
                 }
                 else if (onText) {
                     //I own the clipboard so just return the data locally
-                    onText(reinterpret_cast<char*>(Data.data()), Data.size());
+                    std::string str(reinterpret_cast<char*>(Data.data()), Data.size());
+                    onText(str);
                 }
                 else {
 
@@ -260,7 +261,8 @@ namespace SL
                     convert_crlf(reinterpret_cast<char*>(Data.data()), bytesread);
                     Data.resize(bytesread);
                     if (onText) {
-                        onText(reinterpret_cast<char*>(Data.data()), static_cast<size_t>(bytesread));
+                        std::string str(reinterpret_cast<char*>(Data.data()), static_cast<size_t>(bytesread));
+                        onText(str);
                     }
                 }
                 else if (ClipboardDataType_ == ClipboardDataType::IMAGE) {
@@ -280,7 +282,6 @@ namespace SL
             e.type = SelectionNotify;
             e.requestor = ex.xselectionrequest.requestor;
             e.selection = ex.xselectionrequest.selection;
-            int clipboard = e.selection == CLIPBOARD;
             e.target = ex.xselectionrequest.target;
             e.time = ex.xselectionrequest.time;
             e.property = ex.xselectionrequest.property;

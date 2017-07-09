@@ -9,7 +9,7 @@ namespace SL {
             std::shared_ptr<unsigned char> Data;
             int Height = 0;
             int Width = 0;
-            int PixelStride = 4;
+            int PixelStride = 0;
         };
         class Clipboard_ManagerImpl;
         class Clipboard_Manager {
