@@ -4,6 +4,7 @@
 
 namespace SL {
     namespace Clipboard_Lite {
+        //image data will be in r, g, b format   or r, g, b, a format
         struct Image {
             std::shared_ptr<unsigned char> Data;
             int Height = 0;

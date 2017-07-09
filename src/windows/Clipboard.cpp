@@ -33,26 +33,26 @@ namespace SL {
                     {
                         auto info = reinterpret_cast<LPBITMAPINFO>(dib.Ptr);
                         Image img;
+                        img.Width = info->bmiHeader.biWidth;
+                        img.Height = info->bmiHeader.biHeight;
+                        img.PixelStride = info->bmiHeader.biBitCount / 8;
+
                         if ((info->bmiHeader.biBitCount == 24 || info->bmiHeader.biBitCount == 32) &&
                             info->bmiHeader.biCompression == BI_RGB && info->bmiHeader.biClrUsed == 0) {
 
-                            img.Width = info->bmiHeader.biWidth;
-                            img.Height = info->bmiHeader.biHeight;
-
-                            img.PixelStride = info->bmiHeader.biBitCount / 4;
                             img.Data = std::shared_ptr<unsigned char>(new unsigned char[info->bmiHeader.biSizeImage], [](auto p) {if (p) delete[] p; });
                             memcpy(img.Data.get(), (info + 1), info->bmiHeader.biSizeImage);
 
                             auto linewidth = 0;
-                            auto depth = info->bmiHeader.biBitCount / 8; 
-                            if (depth == 3) linewidth = 4 * ((3 * img.Width + 3) / 4); 
+                            auto depth = info->bmiHeader.biBitCount / 8;
+                            if (depth == 3) linewidth = 4 * ((3 * img.Width + 3) / 4);
                             else linewidth = 4 * img.Width;
                             img.Data = std::shared_ptr<unsigned char>(new unsigned char[img.Height *  img.Width * depth], [](auto p) {if (p) delete[] p; });
 
                             auto *p = img.Data.get();
 
                             for (int i = img.Height - 1; i >= 0; i--) { // for each row, from last to first
-                                auto r = (unsigned char*)(info->bmiColors) + i*linewidth; // beginning of pixel data for the ith row
+                                auto r = img.Data.get() + (img.Width*img.PixelStride*i); // beginning of pixel data for the ith row
                                 for (int j = 0; j < img.Width; j++) { // for each pixel in a row
                                     auto bb = *r++; // BGR is in DIB
                                     auto gg = *r++;
@@ -60,11 +60,56 @@ namespace SL {
                                     *p++ = rr; // we want RGB
                                     *p++ = gg;
                                     *p++ = bb;
-                                    if (depth == 4) *p++ = *r++;
+                                    if (img.PixelStride == 4) *p++ = *r++;
                                 }
                             }
-                            onImage(img);
+
                         }
+                        else {
+                            HDCWrapper dc(GetDC(NULL));
+                            HDCWrapper capturedc(CreateCompatibleDC(dc.DC));
+                            HBITMAPWrapper bitmap(CreateCompatibleBitmap(dc.DC, img.Width, img.Height));
+
+                            auto originalBmp = SelectObject(capturedc.DC, bitmap.Bitmap);
+
+                            void *pDIBBits = (void*)(info->bmiColors);
+                            if (info->bmiHeader.biCompression == BI_BITFIELDS) pDIBBits = (void*)(info->bmiColors + 3);
+                            else if (info->bmiHeader.biClrUsed > 0) pDIBBits = (void*)(info->bmiColors + info->bmiHeader.biClrUsed);
+
+                            SetDIBitsToDevice(capturedc.DC, 0, 0, img.Width, img.Height, 0, 0, 0, img.Height, pDIBBits, info, DIB_RGB_COLORS);
+
+                            BITMAPINFOHEADER bi;
+                            memset(&bi, 0, sizeof(bi));
+
+                            bi.biSize = sizeof(BITMAPINFOHEADER);
+                            bi.biWidth = img.Width;
+                            bi.biHeight = -img.Height;
+                            bi.biPlanes = 1;
+                            bi.biBitCount = static_cast<WORD>(img.PixelStride * 8);
+                            bi.biCompression = BI_RGB;
+                            bi.biSizeImage = ((img.Width * bi.biBitCount + 31) / (img.PixelStride * 8)) * img.PixelStride * img.Height;
+                            img.Data = std::shared_ptr<unsigned char>(new unsigned char[bi.biSizeImage], [](auto p) {if (p) delete[] p; });
+
+                            GetDIBits(capturedc.DC, bitmap.Bitmap, 0, (UINT)img.Height, img.Data.get(), (BITMAPINFO*)&bi, DIB_RGB_COLORS);
+
+                            SelectObject(capturedc.DC, originalBmp);
+
+                            auto *p = img.Data.get();
+
+                            for (int i = 0; i < img.Height; i++) {
+                                auto r = img.Data.get() + (img.Width*img.PixelStride*i); 
+                                for (int j = 0; j < img.Width; j++) { 
+                                    auto bb = *r++;
+                                    auto gg = *r++;
+                                    auto rr = *r++;
+                                    *p++ = rr; // we want RGB
+                                    *p++ = gg;
+                                    *p++ = bb;
+                                    if (img.PixelStride == 4) *p++ = *r++;
+                                }
+                            }
+                        }
+                        onImage(img);
                     }
 
                 }
