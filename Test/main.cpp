@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
         std::cout << "Copying Text to clipboard a " << i++ << " time" << std::endl;
         txt = "pasted text a time ";
         txt += std::to_string(i);
-       // clipboard.copy(txt);
+        clipboard.copy(txt);
         std::this_thread::sleep_for(10s);
     }
 

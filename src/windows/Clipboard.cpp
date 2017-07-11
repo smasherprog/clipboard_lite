@@ -47,17 +47,16 @@ namespace SL {
                             auto depth = info->bmiHeader.biBitCount / 8;
                             if (depth == 3) linewidth = 4 * ((3 * img.Width + 3) / 4);
                             else linewidth = 4 * img.Width;
-                            img.Data = std::shared_ptr<unsigned char>(new unsigned char[img.Height *  img.Width * depth], [](auto p) {if (p) delete[] p; });
 
                             auto *p = img.Data.get();
 
-                            for (int i = img.Height - 1; i >= 0; i--) { // for each row, from last to first
-                                auto r = img.Data.get() + (img.Width*img.PixelStride*i); // beginning of pixel data for the ith row
-                                for (int j = 0; j < img.Width; j++) { // for each pixel in a row
-                                    auto bb = *r++; // BGR is in DIB
+                            for (int i = img.Height - 1; i >= 0; i--) { 
+                                auto r = img.Data.get() + (img.Width*img.PixelStride*i); 
+                                for (int j = 0; j < img.Width; j++) { 
+                                    auto bb = *r++; 
                                     auto gg = *r++;
                                     auto rr = *r++;
-                                    *p++ = rr; // we want RGB
+                                    *p++ = rr;
                                     *p++ = gg;
                                     *p++ = bb;
                                     if (img.PixelStride == 4) *p++ = *r++;
