@@ -15,12 +15,13 @@ see the Exmaple folder for a demo</p>
 
 ```c++
 
-  auto clipboard = SL::Clipboard_Lite::CreateClipboard()
-          .onText([](const char* string, size_t len) {
-        std::cout << "onText" << len<< std::endl;
-        std::cout << string << std::endl;
-    })
-        .run();
+     auto clipboard = SL::Clipboard_Lite::CreateClipboard()
+        .onText([](const std::string& text) {
+        std::cout << text << std::endl;
+    }).onImage([&](const SL::Clipboard_Lite::Image& image) {
+        std::cout << "onImage Height=" << image.Height << " Width=" << image.Width << std::endl;
+    }).run();
+        
     std::string txt = "pasted text";
     clipboard.copy(txt);
 
