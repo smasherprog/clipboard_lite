@@ -98,7 +98,8 @@ namespace SL
                 }
                 else if (onText) {
                     //I own the clipboard so just return the data locally
-                    onText(reinterpret_cast<char*>(Data.data()), Data.size());
+                    std::string str(reinterpret_cast<char*>(Data.data()), Data.size());
+                    onText(str);
                 }
                 else {
 
@@ -260,7 +261,8 @@ namespace SL
                     convert_crlf(reinterpret_cast<char*>(Data.data()), bytesread);
                     Data.resize(bytesread);
                     if (onText) {
-                        onText(reinterpret_cast<char*>(Data.data()), static_cast<size_t>(bytesread));
+                        std::string str(reinterpret_cast<char*>(Data.data()), static_cast<size_t>(bytesread));
+                        onText(str);
                     }
                 }
                 else if (ClipboardDataType_ == ClipboardDataType::IMAGE) {

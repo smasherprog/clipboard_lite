@@ -8,7 +8,7 @@ else()
 endif()
 
 set(${PROJECT_NAME}_EXAMPLE_SRC 
-	main.cpp
+	main.cpp lodepng.h lodepng.cpp tiny_jpeg.h
 )
 
 include_directories(${CLIPBOARD_LITE_INCLUDE_DIRS})
