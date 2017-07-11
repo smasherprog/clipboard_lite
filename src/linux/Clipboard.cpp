@@ -20,7 +20,7 @@ namespace SL
         {
 
             Pasting = false;
-            auto d = Display_ = Display_ = XOpenDisplay(NULL);
+            auto d = Display_ = XOpenDisplay(NULL);
             assert(Display_);
             Window_ = XCreateWindow(Display_,
                 RootWindow(Display_, XDefaultScreen(Display_)),
@@ -280,7 +280,6 @@ namespace SL
             e.type = SelectionNotify;
             e.requestor = ex.xselectionrequest.requestor;
             e.selection = ex.xselectionrequest.selection;
-            int clipboard = e.selection == CLIPBOARD;
             e.target = ex.xselectionrequest.target;
             e.time = ex.xselectionrequest.time;
             e.property = ex.xselectionrequest.property;
