@@ -50,10 +50,10 @@ namespace SL {
 
                             auto *p = img.Data.get();
 
-                            for (int i = img.Height - 1; i >= 0; i--) { 
-                                auto r = img.Data.get() + (img.Width*img.PixelStride*i); 
-                                for (int j = 0; j < img.Width; j++) { 
-                                    auto bb = *r++; 
+                            for (int i = img.Height - 1; i >= 0; i--) {
+                                auto r = img.Data.get() + (img.Width*img.PixelStride*i);
+                                for (int j = 0; j < img.Width; j++) {
+                                    auto bb = *r++;
                                     auto gg = *r++;
                                     auto rr = *r++;
                                     *p++ = rr;
@@ -96,8 +96,8 @@ namespace SL {
                             auto *p = img.Data.get();
 
                             for (int i = 0; i < img.Height; i++) {
-                                auto r = img.Data.get() + (img.Width*img.PixelStride*i); 
-                                for (int j = 0; j < img.Width; j++) { 
+                                auto r = img.Data.get() + (img.Width*img.PixelStride*i);
+                                for (int j = 0; j < img.Width; j++) {
                                     auto bb = *r++;
                                     auto gg = *r++;
                                     auto rr = *r++;
@@ -176,5 +176,60 @@ namespace SL {
             RestoreClip(text, CF_TEXT);
         }
 
+        void Clipboard_ManagerImpl::copy(const Image& image) {
+            Copying = true;
+            BITMAPINFOHEADER   bmih;
+            memset(&bmih, 0, sizeof(BITMAPINFOHEADER));
+
+            bmih.biWidth = image.Width;
+            bmih.biHeight = -image.Height;
+            bmih.biBitCount = image.PixelStride*8;
+            bmih.biCompression = BI_RGB;
+            bmih.biSize = sizeof(BITMAPINFOHEADER);
+            bmih.biPlanes = 1;
+
+            BITMAPINFO dbmi;
+            ZeroMemory(&dbmi, sizeof(dbmi));
+            dbmi.bmiHeader = bmih;
+            dbmi.bmiColors->rgbBlue = 0;
+            dbmi.bmiColors->rgbGreen = 0;
+            dbmi.bmiColors->rgbRed = 0;
+            dbmi.bmiColors->rgbReserved = 0;
+
+            HDC hdc = ::GetDC(NULL);
+            CreateDIBitmap(hdc, &bmih, CBM_INIT, image.Data.get(), &dbmi, DIB_RGB_COLORS);
+            ::ReleaseDC(NULL, hdc);
+
+            //HANDLE hData = GlobalAlloc(GHND | GMEM_SHARE,  sizeof(BITMAPINFO) + m_bmi.bmiHeader.biWidth*m_bmi.bmiHeader.biHeight * 3);
+            //LPVOID pData = (LPVOID)GlobalLock(hData);
+            //memcpy(pData, &m_bmi, sizeof(BITMAPINFO));
+            //memcpy((UCHAR *)pData + sizeof(BITMAPINFO), (LPVOID)m_pUTDispData, m_bmi.bmiHeader.biWidth*m_bmi.bmiHeader.biHeight * 3);
+            //GlobalUnlock(hData);
+        
+            //// cleanup
+            //DeleteObject(hbmp);
+            //if (OpenClipboard(Hwnd) == TRUE) {
+
+            //    if (EmptyClipboard() == TRUE && (image.Height > 0 && image.Width >0)) {
+            //        auto hData = GlobalAlloc(GMEM_MOVEABLE, buffer.size());
+            //        if (hData) {
+            //            auto pData = GlobalLock(hData);
+            //            if (pData) {
+            //                memcpy(pData, buffer.data(), buffer.size());
+            //                GlobalUnlock(hData);
+            //                if (::SetClipboardData(CF_BITMAP, hData)) {
+            //                    //clipboard takes ownership of the memory
+            //                    hData = nullptr;
+            //                }
+            //            }
+            //        }
+            //        if (hData) {
+            //            GlobalFree(hData);
+            //        }
+            //    }
+            //    CloseClipboard();
+
+            //}
+        }
     };
 }

@@ -77,7 +77,8 @@ namespace SL {
 
             void run();
             void copy(const std::string& test);
-
+            void copy(const Image& image);
+          
     
             template<class T>void RestoreClip(const T& buffer, UINT format) {
                 if (OpenClipboard(Hwnd) == TRUE) {

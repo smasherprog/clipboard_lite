@@ -10,6 +10,9 @@ namespace SL {
         void Clipboard_Manager::copy(const std::string& text) {
             Impl_->copy(text);
         }
+        void Clipboard_Manager::copy(const Image& image) {
+            Impl_->copy(image);
+        }
 
         Clipboard_Configuration Clipboard_Configuration::onText(const std::function<void(const std::string& text)>& handle) {
             assert(!Impl_->onText);

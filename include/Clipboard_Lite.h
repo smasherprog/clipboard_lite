@@ -20,6 +20,8 @@ namespace SL {
 
             //copy text into the clipboard
             void copy(const std::string& text);
+           
+            void copy(const Image& img);
 
             operator bool() const { return Impl_.operator bool(); }
             //will stop the library from processing frames and release all memory
