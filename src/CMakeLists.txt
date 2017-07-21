@@ -25,7 +25,10 @@ set(CLIPBOARD_LITE_PLATFORM_LIBS ${corefoundation_lib} ${cocoa_lib})
     set(CLIPBOARD_LITE_PLATFORM_SRC
 ${CMAKE_CURRENT_SOURCE_DIR}/../include/ios/Clipboard.h
 ${CMAKE_CURRENT_SOURCE_DIR}/../src/ios/Clipboard.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/../include/ios/NSClipboard.h
+${CMAKE_CURRENT_SOURCE_DIR}/../src/ios/NSClipboard.m
 )
+
     set(CLIPBOARD_LITE_PLATFORM_INC
        ${CMAKE_CURRENT_SOURCE_DIR}/../include/ios
        ${CMAKE_CURRENT_SOURCE_DIR}/../src/ios

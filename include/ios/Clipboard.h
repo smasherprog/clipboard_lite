@@ -4,6 +4,15 @@
 #include <thread>
 #include <atomic>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    
+#ifdef __cplusplus
+}
+#endif
+
+
 namespace SL {
     namespace Clipboard_Lite {
         struct Image;
