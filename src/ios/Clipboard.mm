@@ -95,6 +95,8 @@ namespace SL {
         }
         void Clipboard_ManagerImpl::copy(const Image& img){
             
+                     
+            
         }
     };
 }
