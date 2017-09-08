@@ -2,6 +2,19 @@
 #include <functional>
 #include <memory>
 
+#if defined(WINDOWS) || defined(WIN32)
+#if defined(CLIPBOARD_LITE_DLL)
+#define CLIPBOARD_LITE_EXTERN __declspec(dllexport)
+#define CLIPBOARD_EXPIMP_TEMPLATE
+#else
+#define CLIPBOARD_LITE_EXTERN
+#define CLIPBOARD_EXPIMP_TEMPLATE extern
+#endif
+#else
+#define CLIPBOARD_LITE_EXTERN
+#define CLIPBOARD_EXPIMP_TEMPLATE
+#endif
+
 namespace SL {
 namespace Clipboard_Lite {
     // image data will be in r, g, b format   or r, g, b, a format
@@ -12,7 +25,7 @@ namespace Clipboard_Lite {
         int PixelStride = 0;
     };
     class Clipboard_ManagerImpl;
-    class Clipboard_Manager {
+    class CLIPBOARD_LITE_EXTERN Clipboard_Manager {
         std::shared_ptr<Clipboard_ManagerImpl> Impl_;
 
       public:
@@ -22,7 +35,7 @@ namespace Clipboard_Lite {
         // copy an image into the clipboard... image data will be in r, g, b format   or r, g, b, a format
         void copy(const Image &img);
     };
-    class IClipboard_Configuration {
+    class CLIPBOARD_LITE_EXTERN IClipboard_Configuration {
       public:
         virtual ~IClipboard_Configuration() {}
         virtual std::shared_ptr<IClipboard_Configuration> onText(const std::function<void(const std::string &text)> &handle) = 0;
@@ -30,6 +43,7 @@ namespace Clipboard_Lite {
         virtual std::shared_ptr<Clipboard_Manager> run() = 0;
     };
 
-    std::shared_ptr<IClipboard_Configuration> CreateClipboard();
+    CLIPBOARD_LITE_EXTERN std::shared_ptr<IClipboard_Configuration> CreateClipboard();
 } // namespace Clipboard_Lite
 } // namespace SL
+CLIPBOARD_EXPIMP_TEMPLATE template class CLIPBOARD_LITE_EXTERN std::shared_ptr<SL::Clipboard_Lite::Clipboard_ManagerImpl>;
