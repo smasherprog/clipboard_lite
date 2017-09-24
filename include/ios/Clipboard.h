@@ -19,8 +19,8 @@ namespace SL {
             std::function<void(const std::string& text)> onText;
             std::function<void(const Image& image)> onImage;
 
-            Clipboard_ManagerImpl();
-           virtual ~Clipboard_ManagerImpl();
+            Clipboard_Manager();
+           virtual ~Clipboard_Manager();
 
             void run();
 			virtual void copy(const std::string &test) override;

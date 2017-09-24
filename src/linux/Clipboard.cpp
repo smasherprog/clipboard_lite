@@ -1,5 +1,5 @@
 #include "Clipboard.h"
-
+#include "Clipboard_Lite.h"
 #include <string>
 #include <string.h>
 #include <functional>
