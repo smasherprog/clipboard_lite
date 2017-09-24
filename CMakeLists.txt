@@ -14,7 +14,8 @@ else()
 endif()
 
 if(WIN32)
-    set(CLIPBOARD_LITE_PLATFORM_SRC      
+    set(CLIPBOARD_LITE_PLATFORM_SRC  
+		include/windows/Clipboard.h
 		src/windows/Clipboard.cpp
     )
     set(CLIPBOARD_LITE_PLATFORM_INC     
@@ -22,6 +23,7 @@ if(WIN32)
     )
 elseif(APPLE)
     set(CLIPBOARD_LITE_PLATFORM_SRC
+		include/ios/Clipboard.h
 		src/ios/Clipboard.mm
 	)
 
@@ -30,6 +32,7 @@ elseif(APPLE)
     )
 else()
 	set(CLIPBOARD_LITE_PLATFORM_SRC 
+		include/linux/Clipboard.h
 		src/linux/Clipboard.cpp
     )
 	find_package(X11 REQUIRED)
@@ -45,12 +48,15 @@ include_directories(
 	${CLIPBOARD_LITE_PLATFORM_INC}
 )
 add_library(${PROJECT_NAME} 
+	include/Clipboard_Lite.h 
 	src/Clipboard_Lite.cpp 
 	${CLIPBOARD_LITE_PLATFORM_SRC}
 )
 if(${BUILD_SHARED_LIBS})	
 	set_target_properties(${PROJECT_NAME} PROPERTIES DEFINE_SYMBOL CLIPBOARD_LITE_DLL)
-	if(APPLE)
+	if(WIN32)
+
+	elseif(APPLE)
 		find_package(Threads REQUIRED)
 		find_library(corefoundation_lib CoreFoundation)
 		find_library(cocoa_lib Cocoa)

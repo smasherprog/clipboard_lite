@@ -13,10 +13,10 @@
 
 namespace SL {
     namespace Clipboard_Lite {
-        Clipboard_ManagerImpl::Clipboard_ManagerImpl() {
+        Clipboard_Manager::Clipboard_Manager() {
             Copying = false;
         }
-        Clipboard_ManagerImpl::~Clipboard_ManagerImpl() {
+        Clipboard_Manager::~Clipboard_Manager() {
             KeepRunning = false;
             if (BackGroundWorker.joinable()) {
                 BackGroundWorker.join();
@@ -26,7 +26,7 @@ namespace SL {
         {
             return std::string( [str UTF8String] );
         }
-        void Clipboard_ManagerImpl::run() {
+        void Clipboard_Manager::run() {
             KeepRunning = true;
             BackGroundWorker = std::thread([&] {
                 //mac platform we must poll to retrive clipboard events
@@ -88,12 +88,12 @@ namespace SL {
                 }
             });
         }
-        void Clipboard_ManagerImpl::copy(const std::string& text) {
+        void Clipboard_Manager::copy(const std::string& text) {
             [[NSPasteboard generalPasteboard] declareTypes: [NSArray arrayWithObject: NSStringPboardType] owner:nil];
             [[NSPasteboard generalPasteboard] setString:[NSString stringWithUTF8String:text.c_str()] forType: NSStringPboardType];
             
         }
-        void Clipboard_ManagerImpl::copy(const Image& img){
+        void Clipboard_Manager::copy(const Image& img){
             
                      
             

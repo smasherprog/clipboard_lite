@@ -1,4 +1,5 @@
 #pragma once
+#include "Clipboard_Lite.h"
 #include <string>
 #include <functional>
 #include <thread>
@@ -8,7 +9,7 @@
 namespace SL {
     namespace Clipboard_Lite {
         struct Image;
-        class Clipboard_ManagerImpl {
+        class Clipboard_Manager : public IClipboard_Manager {
             std::thread BackGroundWorker;
             std::atomic<bool> Copying;
             bool KeepRunning = false;
@@ -19,11 +20,11 @@ namespace SL {
             std::function<void(const Image& image)> onImage;
 
             Clipboard_ManagerImpl();
-            ~Clipboard_ManagerImpl();
+           virtual ~Clipboard_ManagerImpl();
 
             void run();
-            void copy(const std::string& text);
-            void copy(const Image& img);
+			virtual void copy(const std::string &test) override;
+			virtual void copy(const Image &image) override;
         };
     }
 }

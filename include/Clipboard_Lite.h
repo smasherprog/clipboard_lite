@@ -24,26 +24,22 @@ namespace Clipboard_Lite {
         int Width = 0;
         int PixelStride = 0;
     };
-    class Clipboard_ManagerImpl;
-    class CLIPBOARD_LITE_EXTERN Clipboard_Manager {
-        std::shared_ptr<Clipboard_ManagerImpl> Impl_;
-
+    class CLIPBOARD_LITE_EXTERN IClipboard_Manager {
       public:
-        Clipboard_Manager(const std::shared_ptr<Clipboard_ManagerImpl> &impl) : Impl_(impl) {}
+        virtual ~IClipboard_Manager() {}
         // copy text into the clipboard
-        void copy(const std::string &text);
+        virtual void copy(const std::string &text) = 0;
         // copy an image into the clipboard... image data will be in r, g, b format   or r, g, b, a format
-        void copy(const Image &img);
+        virtual void copy(const Image &img) = 0;
     };
     class CLIPBOARD_LITE_EXTERN IClipboard_Configuration {
       public:
         virtual ~IClipboard_Configuration() {}
         virtual std::shared_ptr<IClipboard_Configuration> onText(const std::function<void(const std::string &text)> &handle) = 0;
         virtual std::shared_ptr<IClipboard_Configuration> onImage(const std::function<void(const Image &image)> &handle) = 0;
-        virtual std::shared_ptr<Clipboard_Manager> run() = 0;
+        virtual std::shared_ptr<IClipboard_Manager> run() = 0;
     };
 
     CLIPBOARD_LITE_EXTERN std::shared_ptr<IClipboard_Configuration> CreateClipboard();
 } // namespace Clipboard_Lite
 } // namespace SL
-CLIPBOARD_EXPIMP_TEMPLATE template class CLIPBOARD_LITE_EXTERN std::shared_ptr<SL::Clipboard_Lite::Clipboard_ManagerImpl>;

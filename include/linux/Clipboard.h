@@ -1,4 +1,5 @@
 #pragma once
+#include "Clipboard_Lite.h"
 #include <atomic>
 #include <functional>
 #include <mutex>
@@ -17,7 +18,7 @@ namespace Clipboard_Lite
 {
     struct Image;
 
-    class Clipboard_ManagerImpl
+     class Clipboard_Manager : public IClipboard_Manager {
     {
         enum ClipboardDataType { NONE, TEXT, IMAGE };
         std::thread BackGroundWorker;
@@ -67,11 +68,11 @@ namespace Clipboard_Lite
         std::function<void(const std::string& text)> onText;
         std::function<void(const Image& image)> onImage;
 
-        Clipboard_ManagerImpl();
-        ~Clipboard_ManagerImpl();
+		Clipboard_Manager();
+        virtual ~Clipboard_Manager();
         void run();
-        void copy(const std::string& text);
-         void copy(const Image& image);
+		virtual void copy(const std::string &test) override;
+        virtual void copy(const Image &image) override;
     };
 }
 }

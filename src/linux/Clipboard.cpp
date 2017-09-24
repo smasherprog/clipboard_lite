@@ -16,7 +16,7 @@ namespace SL
 namespace Clipboard_Lite
 {
 
-    Clipboard_ManagerImpl::Clipboard_ManagerImpl()
+    Clipboard_Manager::Clipboard_Manager()
     {
 
         Pasting = false;
@@ -65,7 +65,7 @@ namespace Clipboard_Lite
             std::cout << "XFixes is required for this library to function properly!" << std::endl;
         }
     }
-    Clipboard_ManagerImpl::~Clipboard_ManagerImpl()
+    Clipboard_Manager::~Clipboard_Manager()
     {
         if(Display_ && Window_) {
             XDestroyWindowEvent e = { 0 };
@@ -86,7 +86,7 @@ namespace Clipboard_Lite
         }
     }
 
-    void Clipboard_ManagerImpl::handle_clipboard_timestamp(Time time)
+    void Clipboard_Manager::handle_clipboard_timestamp(Time time)
     {
         if(time > LastTImestamp) {
             LastTImestamp = time;
@@ -103,7 +103,7 @@ namespace Clipboard_Lite
         }
     }
 
-    bool Clipboard_ManagerImpl::getNextEvent(XEvent* event_return)
+    bool Clipboard_Manager::getNextEvent(XEvent* event_return)
     {
         auto start = std::chrono::high_resolution_clock::now();
         while(!XPending(Display_)) {
@@ -115,7 +115,7 @@ namespace Clipboard_Lite
         XNextEvent(Display_, event_return);
         return true;
     }
-    long Clipboard_ManagerImpl::getIncrData(const XSelectionEvent& selevent, long lower_bound)
+    long Clipboard_Manager::getIncrData(const XSelectionEvent& selevent, long lower_bound)
     {
 
         // fprintf(stderr,"Incremental transfer starting due to INCR property\n");
@@ -184,7 +184,7 @@ namespace Clipboard_Lite
         }
         *b = 0;
     }
-    void Clipboard_ManagerImpl::handle_SelectionClear(const XEvent& e)
+    void Clipboard_Manager::handle_SelectionClear(const XEvent& e)
     {
         OwnsClipboard = !(e.xselectionclear.selection == CLIPBOARD);
         if(OwnsClipboard) {
@@ -205,7 +205,7 @@ namespace Clipboard_Lite
                 XFree(p);
         }
     };
-    void Clipboard_ManagerImpl::handle_ClipboardType(const XEvent& e, const Atom types[], unsigned long count)
+    void Clipboard_Manager::handle_ClipboardType(const XEvent& e, const Atom types[], unsigned long count)
     {
         ClipboardDataType_ = ClipboardDataType::NONE;
         for(unsigned long i = 0; i < count; i++) {
@@ -223,7 +223,7 @@ namespace Clipboard_Lite
             }
         }
     }
-    void Clipboard_ManagerImpl::handle_SelectionNotify(const XEvent& e)
+    void Clipboard_Manager::handle_SelectionNotify(const XEvent& e)
     {
         // clear any previous data
         Data.clear();
@@ -283,7 +283,7 @@ namespace Clipboard_Lite
             }
         }
     }
-    void Clipboard_ManagerImpl::handle_SelectionRequest(const XEvent& ex)
+    void Clipboard_Manager::handle_SelectionRequest(const XEvent& ex)
     {
 
         XSelectionEvent e;
@@ -325,7 +325,7 @@ namespace Clipboard_Lite
         }
         XSendEvent(Display_, e.requestor, 0, 0, (XEvent*)&e);
     }
-    void Clipboard_ManagerImpl::handle(const XEvent& ex)
+    void Clipboard_Manager::handle(const XEvent& ex)
     {
 
         std::cout << "EVENT" << ex.type << std::endl;
@@ -351,7 +351,7 @@ namespace Clipboard_Lite
         }
     }
 
-    void Clipboard_ManagerImpl::run()
+    void Clipboard_Manager::run()
     {
         BackGroundWorker = std::thread([&] {
             while(true) {
@@ -368,7 +368,7 @@ namespace Clipboard_Lite
             }
         });
     }
-    void Clipboard_ManagerImpl::copy(const std::string& text)
+    void Clipboard_Manager::copy(const std::string& text)
     {
         if(text.empty())
             return;
@@ -378,7 +378,7 @@ namespace Clipboard_Lite
         ClipboardDataType_ = ClipboardDataType::TEXT;
         XSetSelectionOwner(Display_, CLIPBOARD, Window_, LastTImestamp);
     }
-    void Clipboard_ManagerImpl::copy(const Image& image)
+    void Clipboard_Manager::copy(const Image& image)
     {
     }
 }
