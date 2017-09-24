@@ -18,7 +18,7 @@ namespace Clipboard_Lite
 {
     struct Image;
 
-     class Clipboard_Manager : public IClipboard_Manager {
+    class Clipboard_Manager : public IClipboard_Manager
     {
         enum ClipboardDataType { NONE, TEXT, IMAGE };
         std::thread BackGroundWorker;
@@ -68,11 +68,11 @@ namespace Clipboard_Lite
         std::function<void(const std::string& text)> onText;
         std::function<void(const Image& image)> onImage;
 
-		Clipboard_Manager();
+        Clipboard_Manager();
         virtual ~Clipboard_Manager();
         void run();
-		virtual void copy(const std::string &test) override;
-        virtual void copy(const Image &image) override;
+        virtual void copy(const std::string& test) override;
+        virtual void copy(const Image& image) override;
     };
 }
 }
