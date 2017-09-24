@@ -48,7 +48,7 @@ add_library(${PROJECT_NAME}
 	src/Clipboard_Lite.cpp 
 	${CLIPBOARD_LITE_PLATFORM_SRC}
 )
-if(BUILD_SHARED_LIBS)	
+if(${BUILD_SHARED_LIBS})	
 	set_target_properties(${PROJECT_NAME} PROPERTIES DEFINE_SYMBOL CLIPBOARD_LITE_DLL)
 	if(APPLE)
 		find_package(Threads REQUIRED)
@@ -74,6 +74,7 @@ if(BUILD_SHARED_LIBS)
 endif()
 
 install (TARGETS ${PROJECT_NAME}  
+	RUNTIME DESTINATION bin
 	ARCHIVE DESTINATION lib
 	LIBRARY DESTINATION lib
 )
