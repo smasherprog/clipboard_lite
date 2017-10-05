@@ -37,3 +37,4 @@ deploy:
   on:
     branch: master                 # release from master branch only
     appveyor_repo_tag: true 
+    
