@@ -21,9 +21,9 @@ install:
 
 build_script:
   - cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=c:\projects\output .
-  - cmake --build .
+  - cmake --build . --target install
   - cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=c:\projects\output .
-  - cmake --build .
+  - cmake --build . --target install
 
 deploy:
   release: clipboard_lite-v$(appveyor_build_version)
