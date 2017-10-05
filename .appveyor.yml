@@ -10,7 +10,7 @@ platform:
 - x64
 
 artifacts:
-  - path: 'c:\projects\output\**\*.dll'
+  - path: 'output\**\*.dll'
     name: clipboard_lite_artifact
     
 install:
@@ -20,9 +20,9 @@ install:
   - cmake -G "Visual Studio 15 2017" ..
 
 build_script:
-  - cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=c:\projects\output .
+  - cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=c:\projects\sc\build\output .
   - cmake --build . --target install
-  - cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=c:\projects\output .
+  - cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=c:\projects\sc\build\output .
   - cmake --build . --target install
 
 deploy:
