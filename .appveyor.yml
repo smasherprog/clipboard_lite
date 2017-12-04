@@ -24,7 +24,7 @@ build_script:
   - cmake -DBUILD_SHARED_LIBS=ON .
   - cmake --build . --config Release
   - cmake -DBUILD_SHARED_LIBS=OFF .
-  - cmake --build . --config %configuration%
+  - cmake --build . --config $(configuration)
   
 deploy:
   provider: GitHub
