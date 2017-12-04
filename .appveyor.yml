@@ -21,9 +21,9 @@ install:
   - cmake ..
 
 build_script: 
-  - cmake -DBUILD_SHARED_LIBS=ON . 
-  - cmake --build . --config %CONFIGURATION%
   - cmake -DBUILD_SHARED_LIBS=OFF .
+  - cmake --build . --config %CONFIGURATION%
+  - cmake -DBUILD_SHARED_LIBS=ON . 
   - cmake --build . --config %CONFIGURATION%
   
 deploy:
