@@ -1,7 +1,7 @@
 image: Visual Studio 2017
 
 configuration:
-  - Relase 
+  - Release 
   
 clone_folder: c:\projects\sc
 
@@ -22,10 +22,9 @@ install:
 
 build_script: 
   - cmake -DBUILD_SHARED_LIBS=ON . 
-  - echo cmake --build . --config %CONFIGURATION% --target ALL_BUILD 
-  - cmake --build . --config %CONFIGURATION% --target ALL_BUILD 
+  - cmake --build . --config %CONFIGURATION%
   - cmake -DBUILD_SHARED_LIBS=OFF .
-  - cmake --build . --config %CONFIGURATION% --target ALL_BUILD 
+  - cmake --build . --config %CONFIGURATION%
   
 deploy:
   provider: GitHub
