@@ -20,6 +20,7 @@ install:
   - cmake -G "Visual Studio 15 2017" ..
 
 build_script:
+  - echo %configuration%
   - cmake -DCMAKE_BUILD_TYPE=%configuration% -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=c:\projects\sc\build\output .
   - cmake --build .
   - cmake -DCMAKE_BUILD_TYPE=%configuration%  -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=c:\projects\sc\build\output .
