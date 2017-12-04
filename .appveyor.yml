@@ -21,9 +21,9 @@ install:
 
 build_script:
   - cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=c:\projects\sc\build\output .
-  - cmake --build . --target install
+  - cmake --build .
   - cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=c:\projects\sc\build\output .
-  - cmake --build . --target install
+  - cmake --build .
 
 deploy:
   provider: GitHub
