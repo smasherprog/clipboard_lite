@@ -19,12 +19,11 @@ install:
   - cd build
   - cmake -G "Visual Studio 15 2017" ..
 
-build_script:
-  - echo %configuration%
-  - cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=c:\projects\sc\build\output .
-  - cmake --build . --config %configuration%
-  - cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=c:\projects\sc\build\output .
-  - cmake --build . --config %configuration%
+build_script: 
+  - cmake -DBUILD_SHARED_LIBS=ON .
+  - cmake --build . --target ALL_BUILD --config %configuration%
+  - cmake -DBUILD_SHARED_LIBS=OFF .
+  - cmake --build . --target ALL_BUILD --config %configuration%
 
 deploy:
   provider: GitHub
