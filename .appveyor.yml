@@ -22,9 +22,9 @@ install:
 
 build_script: 
   - cmake -DBUILD_SHARED_LIBS=ON . 
-  - ps: cmake --build . --config $env:configuration
+  - cmd: cmake --build . --config %configuration%
   - cmake -DBUILD_SHARED_LIBS=OFF .
-  - ps: cmake --build . --config $env:configuration
+  - cmd: cmake --build . --config %configuration%
   
 deploy:
   provider: GitHub
