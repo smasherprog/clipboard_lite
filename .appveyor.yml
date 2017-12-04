@@ -10,7 +10,7 @@ platform:
 - x64
 
 artifacts:
-  - path: '$(CONFIGURATION)\**\*.dll'
+  - path: '$(CONFIGURATION)\*.dll'
     name: clipboard_lite_artifact
     
 install:
