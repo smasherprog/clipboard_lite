@@ -15,14 +15,6 @@ artifacts:
     
 install:
   - ps: If ($env:Platform -Match "x86"){ $env:CMAKE_ARCH="" } Else { $env:CMAKE_ARCH=" Win64"}
-  - mkdir C:\projects\deps
-  - cd C:\projects\deps
-  - set CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.0-win64-x64.zip"
-  - appveyor DownloadFile %CMAKE_URL% -FileName cmake.zip
-  - 7z x cmake.zip -oC:\projects\deps > nul
-  - move C:\projects\deps\cmake-* C:\projects\deps\cmake # Move to a version-agnostic directory
-  - set PATH=C:\projects\deps\cmake\bin;%PATH%
-  - cmake --version
   - cd c:\projects\sc
   - mkdir build
   - cd build
@@ -30,10 +22,10 @@ install:
 
 build_script: 
   - cmake -DBUILD_SHARED_LIBS=ON .
-  - cmake --build .
+  - cmake --build . --config %configuration%
   - cmake -DBUILD_SHARED_LIBS=OFF .
-  - cmake --build . 
-
+  - cmake --build . --config %configuration%
+  
 deploy:
   provider: GitHub
   auth_token:
