@@ -22,9 +22,10 @@ install:
 
 build_script: 
   - cmake -DBUILD_SHARED_LIBS=ON . 
-  - cmake --build . --config "%CONFIGURATION%" --target ALL_BUILD 
+  - echo cmake --build . --config %CONFIGURATION% --target ALL_BUILD 
+  - cmake --build . --config %CONFIGURATION% --target ALL_BUILD 
   - cmake -DBUILD_SHARED_LIBS=OFF .
-  - cmake --build . --config "%CONFIGURATION%" --target ALL_BUILD 
+  - cmake --build . --config %CONFIGURATION% --target ALL_BUILD 
   
 deploy:
   provider: GitHub
