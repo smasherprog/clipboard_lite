@@ -30,9 +30,9 @@ install:
 
 build_script: 
   - cmake -DBUILD_SHARED_LIBS=ON .
-  - cmake --build . --target ALL_BUILD --config %configuration%
+  - cmake --build .
   - cmake -DBUILD_SHARED_LIBS=OFF .
-  - cmake --build . --target ALL_BUILD --config %configuration%
+  - cmake --build . 
 
 deploy:
   provider: GitHub
