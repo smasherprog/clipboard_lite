@@ -17,7 +17,7 @@ install:
   - cd c:\projects\sc
   - mkdir build
   - cd build
-  - cmake -G "Visual Studio 15 2017" ..
+  - cmake ..
 
 build_script: 
   - cmake -DBUILD_SHARED_LIBS=ON .
