@@ -10,7 +10,7 @@ platform:
 - x64
 
 artifacts:
-  - path: '$(configuration)\**\*.dll'
+  - path: '$(CONFIGURATION)\**\*.dll'
     name: clipboard_lite_artifact
     
 install:
@@ -22,9 +22,9 @@ install:
 
 build_script: 
   - cmake -DBUILD_SHARED_LIBS=ON . 
-  - cmd: cmake --build . --config %configuration%
+  - cmd: cmake --build . --config %CONFIGURATION%
   - cmake -DBUILD_SHARED_LIBS=OFF .
-  - cmd: cmake --build . --config %configuration%
+  - cmd: cmake --build . --config %CONFIGURATION%
   
 deploy:
   provider: GitHub
