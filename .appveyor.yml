@@ -19,12 +19,11 @@ install:
 build_script: 
   - cmake -DBUILD_SHARED_LIBS=OFF .
   - cmake --build . --config %CONFIGURATION%
-  - 7z a -tzip %CONFIGURATION%_%PLATFORM%_MD.zip -i!%APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%\*.dll
-  - 7z a -tzip %CONFIGURATION%_%PLATFORM%_MD.zip -i!%APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%\*.lib
+  - 7z a %CONFIGURATION%_%PLATFORM%_MT.zip -i!%APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%\*.lib
   - appveyor PushArtifact %CONFIGURATION%_%PLATFORM%_MD.zip
   - cmake -DBUILD_SHARED_LIBS=ON . 
   - cmake --build . --config %CONFIGURATION%
-  - 7z a %CONFIGURATION%_%PLATFORM%_MT.zip -i!%APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%\*.lib
+  - 7z a -tzip %CONFIGURATION%_%PLATFORM%_MD.zip -i!%APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%\*.dll -i!%APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%\*.lib
   - appveyor PushArtifact %CONFIGURATION%_%PLATFORM%_MT.zip
     
 deploy:
