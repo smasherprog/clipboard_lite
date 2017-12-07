@@ -8,10 +8,6 @@ clone_folder: c:\projects\sc
 platform:
 - x86
 - x64
-
-artifacts:
-  - path: 'build\$(CONFIGURATION)\*.dll'
-    name: clipboard_lite_artifact
     
 install:
   - ps: If ($env:Platform -Match "x86"){ $env:CMAKE_ARCH="" } Else { $env:CMAKE_ARCH=" Win64"}
@@ -19,18 +15,21 @@ install:
   - mkdir build
   - cd build
   - cmake ..
-
+  
 build_script: 
   - cmake -DBUILD_SHARED_LIBS=OFF .
   - cmake --build . --config %CONFIGURATION%
+  - 7z a %CONFIGURATION%_%PLATFORM%_MT.zip -i!%APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\clipboard_lite\*.dll -i!%APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\clipboard_lite\*.lib
+  - appveyor PushArtifact %CONFIGURATION%_%PLATFORM%_MT.zip
   - cmake -DBUILD_SHARED_LIBS=ON . 
   - cmake --build . --config %CONFIGURATION%
-  
+  - 7z a %CONFIGURATION%_%PLATFORM%_MT.zip -i!%APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\clipboard_lite\*.lib
+  - appveyor PushArtifact %CONFIGURATION%_%PLATFORM%_MT.zip
+    
 deploy:
   provider: GitHub
   auth_token:
-    secure: WCGi6SXwa6VaPyLH6fZCrmTix+e2FA3zwzhNg8dSf3EdrcecGIR3Z0qG/vssOdfA
-  artifact: clipboard_lite_artifact
+    secure: WCGi6SXwa6VaPyLH6fZCrmTix+e2FA3zwzhNg8dSf3EdrcecGIR3Z0qG/vssOdfA 
   draft: false
   prerelease: false
   on:
