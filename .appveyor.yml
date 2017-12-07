@@ -19,7 +19,7 @@ install:
 build_script: 
   - cmake -DBUILD_SHARED_LIBS=OFF .
   - cmake --build . --config %CONFIGURATION%
-  - 7z a %CONFIGURATION%_%PLATFORM%_MT.zip -i!%APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%\clipboard_lite\*.dll -i!%APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\clipboard_lite\*.lib
+  - 7z a %CONFIGURATION%_%PLATFORM%_MT.zip -i!%APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%\clipboard_lite\*.dll -i!%APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%\clipboard_lite\*.lib
   - appveyor PushArtifact %CONFIGURATION%_%PLATFORM%_MT.zip
   - cmake -DBUILD_SHARED_LIBS=ON . 
   - cmake --build . --config %CONFIGURATION%
