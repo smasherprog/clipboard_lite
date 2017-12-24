@@ -38,7 +38,7 @@ namespace Clipboard_Lite {
                     if ((info->bmiHeader.biBitCount == 24 || info->bmiHeader.biBitCount == 32) && info->bmiHeader.biCompression == BI_RGB &&
                         info->bmiHeader.biClrUsed == 0) {
 
-                        img.Data = std::shared_ptr<unsigned char>(new unsigned char[info->bmiHeader.biSizeImage], [](auto p) {
+                        img.Data = std::shared_ptr<unsigned char>(new unsigned char[info->bmiHeader.biSizeImage], [](unsigned char *p) {
                             if (p)
                                 delete[] p;
                         });
@@ -92,7 +92,7 @@ namespace Clipboard_Lite {
                         bi.biBitCount = static_cast<WORD>(img.PixelStride * 8);
                         bi.biCompression = BI_RGB;
                         bi.biSizeImage = ((img.Width * bi.biBitCount + 31) / (img.PixelStride * 8)) * img.PixelStride * img.Height;
-                        img.Data = std::shared_ptr<unsigned char>(new unsigned char[bi.biSizeImage], [](auto p) {
+                        img.Data = std::shared_ptr<unsigned char>(new unsigned char[bi.biSizeImage], [](unsigned char *p) {
                             if (p)
                                 delete[] p;
                         });
