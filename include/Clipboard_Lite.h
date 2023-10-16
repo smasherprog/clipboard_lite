@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <memory>
+#include <string>
 
 #if defined(WINDOWS) || defined(WIN32)
 #if defined(CLIPBOARD_LITE_DLL)
